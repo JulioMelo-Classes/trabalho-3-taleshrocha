@@ -1,6 +1,6 @@
 # LP1 Projeto 3
 
-Neste projeto você irá fazer um simulador para o jogo snaze, melhores informações podem ser encontradas no [documento de especificação](link);
+Neste projeto você irá fazer um simulador para o jogo snaze, melhores informações podem ser encontradas no [documento de especificação](https://www.overleaf.com/read/prcdstrjrdjr);
 
 ## Sistema de build
 
