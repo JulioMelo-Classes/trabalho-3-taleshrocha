@@ -38,7 +38,7 @@ void SnakeGame::process_actions(){
     //no caso deste trabalho temos 2 tipos de entrada, uma que vem da classe Player, como resultado do processamento da IA
     //outra vem do próprio usuário na forma de uma entrada do teclado.
     switch(state){
-        case WAITING_USER:
+        case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
             cin>>std::ws>>choice;
             break;
         default:
@@ -101,7 +101,7 @@ void SnakeGame::render(){
                 cout<<line<<endl;
             }
             break;
-        case WAITING_USER: //este método bloqueia aqui esperando o usuário digitar a escolha dele
+        case WAITING_USER:
             cout<<"Você quer continuar com o jogo? (s/n)"<<endl;
             break;
         case GAME_OVER:
