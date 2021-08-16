@@ -79,7 +79,7 @@ void wait(int ms){
 }
 
 /**
- * @brief função auxiliar para linpar o terminal
+ * @brief função auxiliar para limpar o terminal
  */
 void clearScreen(){
 //some C++ voodoo here ;D
