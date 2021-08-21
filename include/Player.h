@@ -1,18 +1,24 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
+#include <iostream>
 #include <utility>
-
+#include <vector>
+#include <string>
+#include <memory>
+#include "Level.h"
 
 class Player{
  private:
   //<! Attributes
-  std::pair<int, int> direction;
+  std::vector<std::pair<int, int>> solution;
 
 public:
   Player();
 
-  //Direction or Pair next_move();
-  bool find_solution();
+  template<class maze>
+  std::vector<std::pair<int, int>> find_valid_positions(maze _maze, std::pair<int, int> spawn);
+  bool find_solution(Level *level, std::vector<std::pair<int, int>> *solution, std::pair<int, int> spawn);
+  std::pair<int, int> next_move();
 
 };
 

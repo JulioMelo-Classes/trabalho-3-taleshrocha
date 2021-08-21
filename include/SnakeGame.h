@@ -2,6 +2,12 @@
 #define SnakeGame_h
 #include <iostream>
 #include <vector>
+#include <memory> //Me
+#include <fstream>
+#include <chrono> //por causa do sleep
+#include <thread> //por causa do sleep
+#include "Level.h"
+#include "Player.h"
 
 class SnakeGame{
 public:
@@ -19,10 +25,13 @@ private:
     std::string choice; //<! usado na função process_actions para guardar a escolha do usuário
     GameStates state; //<! guarda o estado do jogo
     std::string levelPath;
+    std::string mode;
 
 public:
     //@brief construtor padrão, fique à vontade para adicionar parâmetros se desejar
-    explicit SnakeGame(char *arg);
+    explicit SnakeGame(char *arg1, char *arg2);
+
+    std::shared_ptr<std::vector<std::string>> get_maze();
 
     //@brief chamado no main, este loop executa o jogo indefinidamente até que o usuário escolha terminar!
     void loop();
@@ -32,9 +41,14 @@ private:
     void initialize_game();
 
     //@brief atualiza o estado do jogo, basicamente movendo os objetos, sorteando novas posições de comida
+    //atualiza o estado do jogo de acordo com o resultado da chamada de "process_input"
     void update();
 
     //@brief processa as entradas do jogador
+    //processa as entradas do jogador de acordo com o estado do jogo
+    //nesse exemplo o jogo tem 3 estados, WAITING_USER, RUNNING e GAME_OVER.
+    //no caso deste trabalho temos 2 tipos de entrada, uma que vem da classe Player, como resultado do processamento da IA
+    //outra vem do próprio usuário na forma de uma entrada do teclado.
     void process_actions();
 
     //@brief testa o estado do jogo e desenha a tela correspondente
