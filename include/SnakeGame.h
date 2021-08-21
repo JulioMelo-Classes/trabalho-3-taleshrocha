@@ -26,6 +26,7 @@ private:
     GameStates state; //<! guarda o estado do jogo
     std::string levelPath;
     std::string mode;
+    std::vector<std::pair<int, int>> solution;
 
 public:
     //@brief construtor padrão, fique à vontade para adicionar parâmetros se desejar

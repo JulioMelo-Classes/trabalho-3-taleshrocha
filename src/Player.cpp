@@ -13,9 +13,11 @@ vector<pair<int, int>> Player::find_valid_positions(maze _maze, pair<int, int> s
   for(int x = -1; x < 2; x++){
    for(int y = -1; y < 2; y++){
      if((spawn.first + x < 14 and spawn.second + y < 9) and
-        (spawn.first + x > 0 and spawn.second + y > 0) and
-        ((*_maze)[spawn.first + x, spawn.second + y] != "#")){
+        (spawn.first + x > 0  and spawn.second + y > 0) and
+        ((*_maze)[spawn.first + x][spawn.second + y] != '#')){ // TODO: não contar a mesma posição
        validPositions.push_back(make_pair(spawn.first + x, spawn.second + y));
+       //cout << (*_maze)[spawn.first + x][ spawn.second + y] << endl;
+       //cout << "Line done" << endl;
      }
    }
   }
@@ -30,6 +32,10 @@ bool Player::find_solution(Level *level, vector<pair<int, int>> *solution, pair<
 
   do{
     validPositions = find_valid_positions(maze, spawn);
+    for(auto pair : validPositions){
+      //cout << pair.first << " " << pair.second << endl;
+      //cout << "DONE" << endl;
+    }
     // Creates a random solution
     randomPosition = validPositions[rand() % validPositions.size()]; //TODO: .size() + 1?
     spawn = randomPosition;
@@ -39,7 +45,7 @@ bool Player::find_solution(Level *level, vector<pair<int, int>> *solution, pair<
   //} while(validPositions.size() != 0);
 
   for(auto pair : *solution){
-    //cout << pair.first << " " << pair.second << endl;
+    cout << pair.first << " " << pair.second << endl;
   }
 
   return true;

@@ -4,11 +4,12 @@
 FLAGS = -Wall -g -fsanitize=address -std=c++20 -lm
 
 # Source and include files
-SRC = ../src/*.cpp
-INC = ../include
+SRC = src/*.cpp
+INC = include
 
 all:
 	g++ $(SRC) -o Snaze -I $(INC) $(FLAGS)
+	mv ./Snaze bin/
 
 clean:
 	rm Snaze

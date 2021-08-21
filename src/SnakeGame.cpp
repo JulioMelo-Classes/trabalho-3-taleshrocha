@@ -78,7 +78,7 @@ void SnakeGame::process_actions(){
 void SnakeGame::update(){
     switch(state){
     case RUNNING:
-        if(frameCount>0 && frameCount%10 == 0) //depois de 10 frames o jogo pergunta se o usuário quer continuar
+        if(frameCount>0 && frameCount%1000 == 0) //depois de 10 frames o jogo pergunta se o usuário quer continuar //TODO
             state = WAITING_USER;
         break;
     case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
@@ -98,33 +98,34 @@ void SnakeGame::update(){
 }
 
 
-//TODO kill that
-int x = 6;
-int y = 1;
+int i = 0;
 void SnakeGame::render(){
     auto maze = level.get_maze();
-    std::vector<std::pair<int, int>> solution;
     clearScreen(); //TODO: look at that
+    if(solution.size() == 0){
+        cout << "CREATED" << endl;
+        player.find_solution(&level, &solution, make_pair(9, 3));
+    }
     switch(state){
     case RUNNING:
         //desenha todas as linhas do labirinto
         //if(player.find_solution){}
 
-        player.find_solution(&level, &solution, make_pair(9, 3));
         for(int line = 0; line < (int) maze->size(); line++){
             for(int column = 0; column < (int) (*maze)[line].size(); column++){
                 //auto move = player.next_move();
                 //if(line == move.first and column == move.second){
-                if(line == (solution)[column].first and column == (solution)[column].second){
+                if(line == solution[i].first and column == solution[i].second){
                     cout << "V";
                 }
                 else{
-                    //cout << column << endl;
                     cout << (*maze)[line][column];
                 }
             }
             cout << endl;
         }
+        i++;
+        cout << "I:" << i << endl;
         break;
     case WAITING_USER:
         cout<<"Você quer continuar com o jogo? (s/n)"<<endl;
@@ -144,7 +145,7 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);// espera 1 segundo entre cada frame
+        wait(300);// espera 1 segundo entre cada frame
     }
 }
 
