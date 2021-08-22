@@ -6,16 +6,18 @@
 
 class Level{
  private:
-  int lines, colluns, food;
-  std::vector<std::string> maze; //<! vector contendo o labirinto atual, pode ser interpretado como uma matriz
+  int lines;
+  int colluns;
+  int food;
   int mazeHeight;
   int mazeWidth;
+  std::vector<std::string> maze; //<! Vector containing the maze
 
  public:
   Level();
   void set_maze(std::string line);
-  //std::shared_ptr<std::vector<std::string>> get_maze();
   std::vector<std::string>* get_maze();
+  std::pair<int, int> spawn;
 };
 
 #endif // LEVEL_H_

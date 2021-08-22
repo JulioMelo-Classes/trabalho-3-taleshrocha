@@ -97,25 +97,24 @@ void SnakeGame::update(){
     }
 }
 
-
-int i = 0;
+bool firstTime = true; // Just to auxiliate TODO: Kill that later
 void SnakeGame::render(){
     auto maze = level.get_maze();
-    clearScreen(); //TODO: look at that
-    if(solution.size() == 0){
-        cout << "CREATED" << endl;
-        player.find_solution(&level, &solution, make_pair(9, 3));
+    clearScreen();
+    //if(player.find_solution(&level)){ future
+    if(firstTime){
+        player.find_solution(&level, make_pair(9, 3));
+        firstTime = false;
     }
+
+    pair<int, int> move = player.next_move();
     switch(state){
     case RUNNING:
-        //desenha todas as linhas do labirinto
-        //if(player.find_solution){}
-
-        for(int line = 0; line < (int) maze->size(); line++){
-            for(int column = 0; column < (int) (*maze)[line].size(); column++){
-                //auto move = player.next_move();
-                //if(line == move.first and column == move.second){
-                if(line == solution[i].first and column == solution[i].second){
+        // TODO: Change that to level.drawn_maze(solution);
+        // Drawn the maze in the screen line by line
+        for(int line = 0; line < (int) maze->size(); line++){ // For the lines
+            for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
+                if(line == move.first and column == move.second){
                     cout << "V";
                 }
                 else{
@@ -124,8 +123,6 @@ void SnakeGame::render(){
             }
             cout << endl;
         }
-        i++;
-        cout << "I:" << i << endl;
         break;
     case WAITING_USER:
         cout<<"Você quer continuar com o jogo? (s/n)"<<endl;
@@ -137,7 +134,7 @@ void SnakeGame::render(){
     frameCount++;
 }
 
-void SnakeGame::game_over(){
+void SnakeGame::game_over(){ // TODO: Implement that
 }
 
 void SnakeGame::loop(){
@@ -145,11 +142,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(300);// espera 1 segundo entre cada frame
+        wait(100);// espera 1 segundo entre cada frame
     }
 }
-
-//shared_ptr<vector<string>> get_maze(){
-//    make_shared<vector<string>> ptr = maze;
-//    return ptr;
-//}
