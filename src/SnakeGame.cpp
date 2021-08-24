@@ -30,30 +30,53 @@ SnakeGame::SnakeGame(char *arg1, char *arg2){
     initialize_game();
 }
 
-Level level; // TODO: Is that ok?
-Player player; // TODO: Is that ok?
 void SnakeGame::initialize_game(){
-    int lineCount = 0, i = 0;
+    // Temporary values to construct the level
+    unsigned int foodQuantity;
+    unsigned int mazeHeight;
+    unsigned int mazeWidth;
+    vector<string> maze;
+    pair<int, int> spawn;
+
+    // String treatment related
     size_t pos = 0;
     string line, token;
     string delimiter = " ";
+    stringstream ss;
+
+    int lineCount = 0, paramCount = 0;
     ifstream levelFile(levelPath);
+
     if(levelFile.is_open()){
-        while(getline(levelFile, line)){ //pega cada linha do arquivo
-            if(lineCount > 0){ //ignora a primeira linha já que ela contem informações que não são uteis para esse exemplo
-                level.set_maze(line);
+        while(getline(levelFile, line)){ // Gets all the file's lines
+            if(lineCount == 0){ // Gets all the maze's parameters
+                while((pos = line.find(delimiter)) != std::string::npos){
+                    token = line.substr(0, pos); //Break the string into tokens.
+                    if(paramCount == 0){
+                        ss << token;
+                        ss >> mazeHeight;
+                    }
+                    else{
+                        ss.clear(); // To be able to get new values in that ss
+                        ss << token;
+                        ss >> mazeWidth;
+                    }
+                    line.erase(0, pos + delimiter.length()); //Erase the token from the original string.
+                    paramCount++;
+                }
+                ss.clear(); // To be able to get new values in that ss
+                ss << line;
+                ss >> foodQuantity;
             }
-            //else{
-            //    while((pos = line.find(delimiter)) != std::string::npos){
-            //        token = line.substr(0, pos); //Break the string into tokens.
-            //        //switch(i){
-            //        //    case 0: stringstream ss(token); ss >> level.lines; break;
-            //        //    case 1: stringstream ss(token); ss >> level.colluns; break;
-            //        //    case 2: stringstream ss(token); ss >> level.foods; break;
-            //        //}
-            //        i++;
-            //    }
-            //}
+            else{ // Gets the maze
+                for(int column = 0; column < (int) line.size(); column++){ // Gets the spawn point and removes the (*) from the map
+                    if(line[column] == '*'){
+                        spawn = make_pair(lineCount, column);
+                        line[column] = ' ';
+                    }
+                }
+                maze.push_back(line);
+            }
             lineCount++;
         }
     }
@@ -61,6 +84,10 @@ void SnakeGame::initialize_game(){
         //TODO: Make that better. Like return 1
         cout << "ERROR: Unable to open the mazes file!" << endl;
     }
+
+    //cout << mazeHeight << " " << mazeWidth << " " << foodQuantity << " Spawn:" << spawn.first << " " << spawn.second << endl; //DEBUG
+    levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
+    players.push_back(make_shared<Player>()); // Creates and stores a player
     state = RUNNING;
 }
 
@@ -97,21 +124,30 @@ void SnakeGame::update(){
     }
 }
 
-bool firstTime = true; // Just to auxiliate TODO: Kill that later
 void SnakeGame::render(){
-    auto maze = level.get_maze();
+
+    // Gets the first player and level
+    auto level = levels[0];
+    auto player = players[0];
+
+    auto maze = level->get_maze();
     clearScreen();
-    //if(player.find_solution(&level)){ future
-    if(firstTime){
-        player.find_solution(&level, make_pair(9, 3));
-        firstTime = false;
+
+    pair<int, int> move = player->next_move();
+    if((*maze)[move.first][move.second] == '$'){
+        if(level->eat_food()){
+            state = VICTORY;
+        }
+        level->put_food();
+        player->find_solution(level);
+        move = player->next_move();
     }
 
-    pair<int, int> move = player.next_move();
     switch(state){
     case RUNNING:
-        // TODO: Change that to level.drawn_maze(solution);
+        // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze
         // Drawn the maze in the screen line by line
+        //level->put_food();
         for(int line = 0; line < (int) maze->size(); line++){ // For the lines
             for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
                 if(line == move.first and column == move.second){
@@ -125,10 +161,13 @@ void SnakeGame::render(){
         }
         break;
     case WAITING_USER:
-        cout<<"Você quer continuar com o jogo? (s/n)"<<endl;
+        cout<<"CONTINUE? (s/n)"<<endl;
         break;
     case GAME_OVER:
-        cout<<"O jogo terminou!"<<endl;
+        cout<<"GAME OVER!"<<endl;
+        break;
+    case VICTORY:
+        cout<<"VICTORY"<<endl;
         break;
     }
     frameCount++;
@@ -138,10 +177,13 @@ void SnakeGame::game_over(){ // TODO: Implement that
 }
 
 void SnakeGame::loop(){
+    auto level = levels[0];
+    auto player = players[0];
+    player->find_solution(level);
     while(state != GAME_OVER){
         process_actions();
         update();
         render();
-        wait(100);// espera 1 segundo entre cada frame
+        wait(30);// espera 1 segundo entre cada frame
     }
 }

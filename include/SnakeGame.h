@@ -2,8 +2,9 @@
 #define SnakeGame_h
 #include <iostream>
 #include <vector>
-#include <memory> //Me
+#include <memory>
 #include <fstream>
+#include <sstream>
 #include <chrono> //por causa do sleep
 #include <thread> //por causa do sleep
 #include "Level.h"
@@ -15,6 +16,7 @@ public:
     enum GameStates{
         RUNNING, //<! quando o jogo está executando o estado é RUNNING
         GAME_OVER, //<! quando o jogo deve terminar o estado é GAME_OVER
+        VICTORY, //<! quando o jogo deve terminar o estado é GAME_OVER
         WAITING_USER //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER
     };
 
@@ -25,6 +27,8 @@ private:
     GameStates state; //<! guarda o estado do jogo
     std::string levelPath;
     std::string mode;
+    std::vector<std::shared_ptr<Level>> levels; //< Store all the level's references in the game
+    std::vector<std::shared_ptr<Player>> players; //< Store all the player's references in the game
 
 public:
     //@brief construtor padrão, fique à vontade para adicionar parâmetros se desejar
