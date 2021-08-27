@@ -1,0 +1,37 @@
+* LP1's 3nd project
+
+#+begin_src
+       ____________              ____________              ____________
+     /  _________   \          /  _________   \          /  _________   \
+    |  |  _____  |  |  _____  |  |  _____  |  |  _____  |  |  _____  |  |        _
+    |  | |   __| |  | |   | | |  | |  _  | |  | |__   | |  | |   __| |  |       ( )
+    |  | |__   | |  | | | | | |  | |     | |  | |   __| |  | |   __| |  |      (   )
+    |  | |_____| |  | |_|___| |  | |__|__| |  | |_____| |  | |_____| |  |      /  /
+   ($  $)        \   \________/  /         \   \________/  /         \  \_____/  /
+    \__/          \_____________/           \_____________/           \_________/
+
+                           a SNAke traped in a maZE
+#+end_src
+
+- This project is a snake similar game with ASCII graphics.
+
+** How to compile
+- Open your shell and run:
+#+begin_src shell
+mkdir build
+cd build
+cmake ..
+cmake --build .
+#+end_src
+- Make sure you have Cmake installed in your system.
+
+** How to run
+- Open your shell and run:
+#+begin_src shell
+./Snaze ../data/maze-file.dat tail
+#+end_src
+- Or:
+#+begin_src shell
+./Snaze ../data/maze-file.dat no-tail
+#+end_src
+- For the non-tail mode. Looks like Pacman!
