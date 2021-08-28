@@ -29,6 +29,7 @@ private:
     std::string mode;
     std::vector<std::shared_ptr<Level>> levels; //< Store all the level's references in the game
     std::vector<std::shared_ptr<Player>> players; //< Store all the player's references in the game
+    std::pair<int, int> move;
 
 public:
     //@brief construtor padrão, fique à vontade para adicionar parâmetros se desejar

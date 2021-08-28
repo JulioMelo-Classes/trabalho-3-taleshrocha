@@ -88,13 +88,19 @@ void SnakeGame::initialize_game(){
     //cout << mazeHeight << " " << mazeWidth << " " << foodQuantity << " Spawn:" << spawn.first << " " << spawn.second << endl; //DEBUG
     levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
     players.push_back(make_shared<Player>()); // Creates and stores a player
-    state = RUNNING;
+    state = WAITING_USER;
 }
 
 void SnakeGame::process_actions(){
+    auto player = players[0];
     switch(state){
+    case RUNNING:
+        move = player->next_move();
+        break;
     case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
-        cin>>std::ws>>choice;
+        //cin>>std::ws>>choice;
+        render();
+        std::getline(std::cin, choice);
         break;
     default:
         //nada pra fazer aqui
@@ -103,18 +109,24 @@ void SnakeGame::process_actions(){
 }
 
 void SnakeGame::update(){
+    auto level = levels[0];
+    auto player = players[0];
+    auto maze = level->get_maze();
+
     switch(state){
     case RUNNING:
-        if(frameCount>0 && frameCount%1000 == 0) //depois de 10 frames o jogo pergunta se o usuário quer continuar //TODO
-            state = WAITING_USER;
+        if((*maze)[move.first][move.second] == '$'){
+            if(level->eat_food()){
+                state = WAITING_USER;
+            }
+            level->put_food();
+            player->find_solution(level);
+            move = player->next_move();
+        }
         break;
     case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
-        if(choice == "n"){
-            state = GAME_OVER;
-            game_over();
-        }
-        else{
-            //pode fazer alguma coisa antes de fazer isso aqui
+        if(choice.length() == 0){
+            //initialize_game(); // TODO: Don't work
             state = RUNNING;
         }
         break;
@@ -125,26 +137,15 @@ void SnakeGame::update(){
 }
 
 void SnakeGame::render(){
-
-    // Gets the first player and level
-    auto level = levels[0];
-    auto player = players[0];
-
-    auto maze = level->get_maze();
     clearScreen();
+    auto level = levels[0];
+    auto maze = level->get_maze();
 
-    pair<int, int> move = player->next_move();
-    if((*maze)[move.first][move.second] == '$'){
-        if(level->eat_food()){
-            state = VICTORY;
-        }
-        level->put_food();
-        player->find_solution(level);
-        move = player->next_move();
-    }
+    // Render the menu
 
     switch(state){
     case RUNNING:
+        cout << "Lifes: " << 0 << " | Score: " << 0 << " | Food eaten: " << 0 << endl;
         // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze
         // Drawn the maze in the screen line by line
         //level->put_food();
@@ -161,7 +162,32 @@ void SnakeGame::render(){
         }
         break;
     case WAITING_USER:
-        cout<<"CONTINUE? (s/n)"<<endl;
+        cout << R"(
+           ____________              ____________              ____________
+         /  _________   \          /  _________   \          /  _________   \
+        |  |  _____  |  |  _____  |  |  _____  |  |  _____  |  |  _____  |  |        _
+        |  | |   __| |  | |   | | |  | |  _  | |  | |__   | |  | |   __| |  |       ( )
+        |  | |__   | |  | | | | | |  | |     | |  | |   __| |  | |   __| |  |      (   )
+        |  | |_____| |  | |_|___| |  | |__|__| |  | |_____| |  | |_____| |  |      /  /
+       ($  $)        \   \________/  /         \   \________/  /         \  \_____/  /
+        \__/          \_____________/           \_____________/           \_________/
+
+                              a SNAke traped in a maZE
+                                Press enter to begin
+        )";
+        cout << endl;
+
+        for(int line = 0; line < (int) maze->size(); line++){ // For the lines
+            for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
+                if(line == (level->get_spawn()).first and column == (level->get_spawn()).second){
+                    cout << "*";
+                }
+                else{
+                    cout << (*maze)[line][column];
+                }
+            }
+            cout << endl;
+        }
         break;
     case GAME_OVER:
         cout<<"GAME OVER!"<<endl;
@@ -184,6 +210,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(30);// espera 1 segundo entre cada frame
+        wait(100);// espera 1 segundo entre cada frame
     }
 }

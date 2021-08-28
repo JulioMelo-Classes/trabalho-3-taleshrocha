@@ -15,9 +15,10 @@ vector<pair<int, int>> Player::find_valid_positions(maze _maze, pair<int, int> s
   for(int x = -1; x < 2; x++){  // For the lines
    for(int y = -1; y < 2; y++){ // For the columns
      if(    (spawn.first + x < 14 and spawn.second + y < 9)
-        and (spawn.first + x > 0  and spawn.second + y > 0)
-        and ((*_maze)[spawn.first + x][spawn.second + y] != '#')
-        and !(x == 0 and y == 0)){
+            and (spawn.first + x > 0  and spawn.second + y > 0)
+            and ((*_maze)[spawn.first + x][spawn.second + y] != '#')
+            and !(x == 0 and y == 0) // Can't be in the same spot
+            and !(x != 0 and y != 0)){ // Can't be in the diagonals
        validPositions.push_back(make_pair(spawn.first + x, spawn.second + y));
      }
    }
