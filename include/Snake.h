@@ -21,6 +21,9 @@ public:
   explicit Snake(int _life, std::pair<int, int> spawn);
   void turn(int _headPosition);
   void move(std::pair<int, int> position, bool food);
+  std::vector<std::pair<int, int>>* get_body();
+  int get_life();
+  int get_foodEaten();
 };
 
 #endif // SNAKE_H_

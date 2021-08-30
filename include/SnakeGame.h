@@ -27,11 +27,15 @@ private:
     std::string choice; //<! usado na função process_actions para guardar a escolha do usuário
     GameStates state; //<! guarda o estado do jogo
     std::string levelPath;
-    std::string mode;
-    std::vector<std::shared_ptr<Level>> levels; //< Store all the level's references in the game
-    std::vector<std::shared_ptr<Player>> players; //< Store all the snake's references in the game
-    std::vector<std::shared_ptr<Snake>> snakes; //< Store all the player's references in the game
-    std::pair<int, int> move;
+    std::string mode; // Just a aux
+    bool tail;
+    std::vector<std::shared_ptr<Level>> levels; //<! Store all the level's references in the game
+    std::vector<std::shared_ptr<Player>> players; //<! Store all the snake's references in the game
+    std::vector<std::shared_ptr<Snake>> snakes; //<! Store all the player's references in the game
+    std::pair<int, int> move; // Just a aux
+    std::shared_ptr<Snake> snake; //<! The snake in with we are using
+    std::shared_ptr<Player> player; //<! The player in with we are using
+    std::shared_ptr<Level> level; //<! The level in with we are using
 
 public:
     //@brief construtor padrão, fique à vontade para adicionar parâmetros se desejar

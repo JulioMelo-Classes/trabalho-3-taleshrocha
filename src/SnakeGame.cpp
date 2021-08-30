@@ -47,6 +47,11 @@ void SnakeGame::initialize_game(){
     int lineCount = 0, paramCount = 0;
     ifstream levelFile(levelPath);
 
+    if(mode == "tail")
+        tail = true;
+    else
+        tail = false;
+
     if(levelFile.is_open()){
         while(getline(levelFile, line)){ // Gets all the file's lines
             if(lineCount == 0){ // Gets all the maze's parameters
@@ -88,19 +93,21 @@ void SnakeGame::initialize_game(){
     levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
     snakes.push_back(make_shared<Snake>(5, spawn));
     players.push_back(make_shared<Player>()); // Creates and stores a player
+    level = levels[0];
+    player = players[0];
+    snake = snakes[0];
     state = WAITING_USER;
 }
 
 void SnakeGame::process_actions(){
-    auto player = players[0];
     switch(state){
     case RUNNING:
         move = player->next_move();
+        //snake->move(move, false);
         break;
     case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
-        //cin>>std::ws>>choice;
         render();
-        std::getline(std::cin, choice);
+        std::getline(std::cin, choice); // Waits for a enter
         break;
     default:
         //nada pra fazer aqui
@@ -109,8 +116,6 @@ void SnakeGame::process_actions(){
 }
 
 void SnakeGame::update(){
-    auto level = levels[0];
-    auto player = players[0];
     auto maze = level->get_maze();
 
     switch(state){
@@ -122,7 +127,9 @@ void SnakeGame::update(){
             level->put_food();
             player->find_solution(level);
             move = player->next_move();
+            snake->move(move, tail);
         }
+        snake->move(move, false);
         break;
     case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
         if(choice.length() == 0){
@@ -138,30 +145,36 @@ void SnakeGame::update(){
 
 void SnakeGame::render(){
     clearScreen();
-    auto level = levels[0];
     auto maze = level->get_maze();
-
-    // Render the menu
+    auto body = snake->get_body();
+    bool print;
 
     switch(state){
     case RUNNING:
-        cout << "Lifes: " << 0 << " | Score: " << 0 << " | Food eaten: " << 0 << " of " << level->get_foodQuantity() << endl;
+        cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food eaten: " << 0 << " of " << level->get_foodQuantity() << endl;
         // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze
         // Drawn the maze in the screen line by line
-        //level->put_food();
         for(int line = 0; line < (int) maze->size(); line++){ // For the lines
             for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
-                if(line == move.first and column == move.second){
-                    cout << "V";
+                for(int i = 0; i < (int) body->size(); i++){
+                    if(line == ((*body)[i]).first and column == ((*body)[i]).second){
+                        if(i == 0)
+                            cout << "V";
+                        else
+                            cout << "O";
+                        print = true;
+                    }
                 }
-                else{
+                if(!print){
                     cout << (*maze)[line][column];
                 }
+                print = false;
             }
             cout << endl;
         }
         break;
     case WAITING_USER:
+        // Render the menu
         cout << R"(
            ____________              ____________              ____________
          /  _________   \          /  _________   \          /  _________   \
@@ -203,13 +216,12 @@ void SnakeGame::game_over(){ // TODO: Implement that
 }
 
 void SnakeGame::loop(){
-    auto level = levels[0];
-    auto player = players[0];
-    player->find_solution(level);
+    player->find_solution(level); // Finds the first solution
+
     while(state != GAME_OVER){
         process_actions();
         update();
         render();
-        wait(10);// espera 1 segundo entre cada frame
+        wait(5);// espera 1 segundo entre cada frame
     }
 }
