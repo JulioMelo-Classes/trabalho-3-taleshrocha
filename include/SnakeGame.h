@@ -9,6 +9,7 @@
 #include <thread> //por causa do sleep
 #include "Level.h"
 #include "Player.h"
+#include "Snake.h"
 
 class SnakeGame{
 public:
@@ -28,7 +29,8 @@ private:
     std::string levelPath;
     std::string mode;
     std::vector<std::shared_ptr<Level>> levels; //< Store all the level's references in the game
-    std::vector<std::shared_ptr<Player>> players; //< Store all the player's references in the game
+    std::vector<std::shared_ptr<Player>> players; //< Store all the snake's references in the game
+    std::vector<std::shared_ptr<Snake>> snakes; //< Store all the player's references in the game
     std::pair<int, int> move;
 
 public:

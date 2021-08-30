@@ -14,7 +14,7 @@ vector<pair<int, int>> Player::find_valid_positions(maze _maze, pair<int, int> s
   // Se all the possible places around the snake that it can go and stores them in the validPositions vector
   for(int x = -1; x < 2; x++){  // For the lines
    for(int y = -1; y < 2; y++){ // For the columns
-     if(    (spawn.first + x < 14 and spawn.second + y < 9)
+     if(    (spawn.first + x < 14 and spawn.second + y < 9) //TODO: kill that hard code
             and (spawn.first + x > 0  and spawn.second + y > 0)
             and ((*_maze)[spawn.first + x][spawn.second + y] != '#')
             and !(x == 0 and y == 0) // Can't be in the same spot

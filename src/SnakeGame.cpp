@@ -85,8 +85,8 @@ void SnakeGame::initialize_game(){
         cout << "ERROR: Unable to open the mazes file!" << endl;
     }
 
-    //cout << mazeHeight << " " << mazeWidth << " " << foodQuantity << " Spawn:" << spawn.first << " " << spawn.second << endl; //DEBUG
     levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
+    snakes.push_back(make_shared<Snake>(5, spawn));
     players.push_back(make_shared<Player>()); // Creates and stores a player
     state = WAITING_USER;
 }
@@ -126,7 +126,7 @@ void SnakeGame::update(){
         break;
     case WAITING_USER: //se o jogo estava esperando pelo usuário então ele testa qual a escolha que foi feita
         if(choice.length() == 0){
-            //initialize_game(); // TODO: Don't work
+            initialize_game(); // TODO: Don't work
             state = RUNNING;
         }
         break;
@@ -145,7 +145,7 @@ void SnakeGame::render(){
 
     switch(state){
     case RUNNING:
-        cout << "Lifes: " << 0 << " | Score: " << 0 << " | Food eaten: " << 0 << endl;
+        cout << "Lifes: " << 0 << " | Score: " << 0 << " | Food eaten: " << 0 << " of " << level->get_foodQuantity() << endl;
         // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze
         // Drawn the maze in the screen line by line
         //level->put_food();
@@ -210,6 +210,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(100);// espera 1 segundo entre cada frame
+        wait(10);// espera 1 segundo entre cada frame
     }
 }

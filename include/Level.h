@@ -27,7 +27,7 @@ class Level{
 
   unsigned int get_foodQuantity();
 
-  bool eat_food();
+  bool eat_food(); // TODO: The snake eats the food, not the level
 
   void put_food();
 
