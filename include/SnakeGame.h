@@ -7,6 +7,7 @@
 #include <sstream>
 #include <chrono> //por causa do sleep
 #include <thread> //por causa do sleep
+
 #include "Level.h"
 #include "Player.h"
 #include "Snake.h"
@@ -22,20 +23,24 @@ public:
     };
 
 private:
-    //<! atributos adicione outros se quiser
-    int frameCount; //<! contador de frames, usado apenas como exemplo
-    std::string choice; //<! usado na função process_actions para guardar a escolha do usuário
-    GameStates state; //<! guarda o estado do jogo
-    std::string levelPath;
-    std::string mode; // Just a aux
-    bool tail;
-    std::vector<std::shared_ptr<Level>> levels; //<! Store all the level's references in the game
+    //<! attributes
+    GameStates state; //<! keeps the game state
+    std::string choice; //<! used in process_actions. Keeps the user choice
+    std::string levelPath; //<! Is the path to the maze file
+    std::pair<int, int> nextPos; //<! used in Player::next_move. Keeps the next snake's position
+    int gameSpeed; //<! Sets the speed. The smaller, the faster
+    bool tail = false; //<! If the game mode is with tail
+
+    // Vectors
+    std::vector<std::shared_ptr<Level>> levels;   //<! Store all the level's references in the game
     std::vector<std::shared_ptr<Player>> players; //<! Store all the snake's references in the game
-    std::vector<std::shared_ptr<Snake>> snakes; //<! Store all the player's references in the game
-    std::pair<int, int> move; // Just a aux
-    std::shared_ptr<Snake> snake; //<! The snake in with we are using
-    std::shared_ptr<Player> player; //<! The player in with we are using
-    std::shared_ptr<Level> level; //<! The level in with we are using
+    std::vector<std::shared_ptr<Snake>> snakes;   //<! Store all the player's references in the game
+
+    // Something TODO
+    std::shared_ptr<Snake> snake;    //<! The snake used to render
+    std::shared_ptr<Snake> snakeLog; //<! The snake used in to find the solutions
+    std::shared_ptr<Player> player;  //<! The player in with we are using
+    std::shared_ptr<Level> level;    //<! The level in with we are using
 
 public:
     //@brief construtor padrão, fique à vontade para adicionar parâmetros se desejar
@@ -63,6 +68,8 @@ private:
 
     //@brief testa o estado do jogo e desenha a tela correspondente
     void render();
+
+    void victory();
 
     //@brief é chamada quando o jogo termina a fim de destruir/resetar elementos do estado do jogo
     void game_over();

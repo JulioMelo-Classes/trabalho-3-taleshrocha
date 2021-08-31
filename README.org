@@ -35,3 +35,5 @@ cmake --build .
 ./Snaze ../data/maze-file.dat no-tail
 #+end_src
 - For the non-tail mode. Looks like Pacman!
+
+- Then, set the game speed. 1 is the fastest.
