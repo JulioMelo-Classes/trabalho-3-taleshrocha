@@ -23,7 +23,7 @@ cd build
 cmake ..
 cmake --build .
 #+end_src
-- Make sure you have Cmake installed in your system.
+- Make sure you have CMake installed in your system.
 
 ** How to run
 - Open your shell and run:
@@ -36,4 +36,4 @@ cmake --build .
 #+end_src
 - For the non-tail mode. Looks like Pacman!
 
-- Then, set the game speed. 1 is the fastest.
+- Then, set the game speed. 1 is the fastest;
