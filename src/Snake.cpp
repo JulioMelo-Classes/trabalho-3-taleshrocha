@@ -13,7 +13,7 @@ void Snake::turn(int _headPosition){
 }
 
 void Snake::move(std::pair<int, int> position, bool food){ // TODO: make that food var more understandable
-  if(position.first != body[0].first or position.first != body[0].second){
+  if(position.first != body[0].first or position.second != body[0].second){
     body.insert(body.begin(), position); // Puts the new head in the snake and makes it bigger
     if(!food)
       body.pop_back(); // Remove the last part of the snake's tail, since the snake doesn't have food, it will not grow

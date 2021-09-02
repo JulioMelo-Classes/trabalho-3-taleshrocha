@@ -110,6 +110,8 @@ void SnakeGame::process_actions(){
 void SnakeGame::update(){
     int x;
     auto maze = level->get_maze();
+    auto body = snake->get_body();
+    auto bodyLog = snakeLog->get_body();
 
     switch(state){
     case RUNNING:
@@ -118,8 +120,16 @@ void SnakeGame::update(){
         }
         else{
             snake->move(nextPos, snake->has_tail());
-            if(!player->find_solution(level, snakeLog)) // Finds the first solution
-                game_over();
+
+            bodyLog->clear();
+            for(int i = 0; i < body->size(); i++){
+                bodyLog->push_back(make_pair((*body)[i].first, (*body)[i].second));
+            }
+
+            //snakeLog->move(nextPos, snakeLog->has_tail());
+            cin >> gameSpeed;
+            level->put_food();
+            player->find_solution(level, snakeLog);
         }
         break;
     case WAITING_USER:
@@ -140,13 +150,15 @@ void SnakeGame::render(){
     switch(state){
     case RUNNING:
 
-        //cout << "snake" << endl;
+        //cout << "----SNAKE----" << endl;
         //for(int i = 0; i < (int) body->size(); i++)
         //    cout << "body["<< i <<"]: " << (*body)[i].first << " | " << (*body)[i].second << endl;
+        //cout << "-------------" << endl;
 
-        //cout << "snakeLog" << endl;
+        //cout << "----SNAKELOG----" << endl;
         //for(int i = 0; i < (int) bodyLog->size(); i++)
         //    cout << "bodyLog["<< i << "]: " << (*bodyLog)[i].first << " | " << (*bodyLog)[i].second << endl;
+        //cout << "----------------" << endl;
 
         cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
         // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze

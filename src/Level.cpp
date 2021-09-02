@@ -18,7 +18,7 @@ using namespace std;
       }
     }
   }
-  foodPosition = foodValidPositions[rand() % foodValidPositions.size()]; //TODO: .size() + 1?
+  foodPosition = foodValidPositions[rand() % foodValidPositions.size()];
   maze[foodPosition.first][foodPosition.second] = '$'; // Sets the first food position
 }
 
