@@ -13,9 +13,11 @@ void Snake::turn(int _headPosition){
 }
 
 void Snake::move(std::pair<int, int> position, bool food){ // TODO: make that food var more understandable
-  body.insert(body.begin(), position); // Puts the new head in the snake and makes it bigger
-  if(!food)
-    body.pop_back(); // Remove the last part of the snake's tail, since the snake doesn't have food, it will not grow
+  if(position.first != body[0].first or position.first != body[0].second){
+    body.insert(body.begin(), position); // Puts the new head in the snake and makes it bigger
+    if(!food)
+      body.pop_back(); // Remove the last part of the snake's tail, since the snake doesn't have food, it will not grow
+  }
 }
 
 void Snake::reset_body(std::pair<int, int> spawn){

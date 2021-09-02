@@ -98,7 +98,6 @@ void SnakeGame::process_actions(){
         break;
     case WAITING_USER: // The game blocks in here. Waits for the user to set a game time
         render(); // Shows the menu TODO is redering two times
-        //std::getline(std::cin, choice); // Waits for a enter
         cin >> gameSpeed; // In the menu screen
         break;
     case VICTORY:
@@ -229,8 +228,9 @@ void SnakeGame::victory(){
 }
 
 void SnakeGame::loop(){
-    if(!player->find_solution(level, snakeLog)) // Finds the first solution
+    if(!player->find_solution(level, snakeLog)){ // Finds the first solution
         game_over();
+        }
 
     while(state != GAME_OVER){
         process_actions();

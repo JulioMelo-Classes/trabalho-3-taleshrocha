@@ -7,10 +7,10 @@ Player::Player(){ // TODO: Make that useful
 
 std::vector<std::pair<int, int>> Player::find_valid_positions(std::shared_ptr<Level> level, std::shared_ptr<Snake> snake){
   vector<pair<int, int>> validPositions; // Is where all the valid positions around the snake go
+  bool bite = false; // Just to auxiliate
   auto maze = level->get_maze();
   auto body = snake->get_body();
 
-  bool bite = false;
 
   // Se all the possible places around the snake that it can go and stores them in the validPositions vector
   for(int x = -1; x < 2; x++){   // For the lines
@@ -21,7 +21,6 @@ std::vector<std::pair<int, int>> Player::find_valid_positions(std::shared_ptr<Le
          and !(x == 0 and y == 0)                                          // Can't be in the same spot
          and !(x != 0 and y != 0)){                                        // Can't be in the diagonals
         for(int i = 1; i < (int) body->size(); i++){ // See if the snake will not bite it's tail at any spot
-          //cout << (*body)[0].first + x << " " << (*body)[i].first << " | " << (*body)[0].second + y << " " << (*body)[i].second << endl;
           if((*body)[0].first + x == (*body)[i].first and (*body)[0].second + y == (*body)[i].second){
             bite = true;
             break;
@@ -45,28 +44,12 @@ bool Player::find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> 
   auto maze = level->get_maze();
   auto body = snake->get_body();
 
-
   // Pics a random position of the validPositions and stores it in the solution vector
-while((*maze)[(*body)[0].first][(*body)[0].second] != '$'){
+  while((*maze)[(*body)[0].first][(*body)[0].second] != '$'){
     validPositions = find_valid_positions(level, snake);
-    if(validPositions.size() > 0){ // In case the snake found a valid place to go
-      snake->move(validPositions[rand() % validPositions.size()], false);
-    }
-    else{
-      cout << "FALSE" << endl;
-      return true;
-    }
+    snake->move(validPositions[rand() % validPositions.size()], false); // BUG: if find no solution
     solution.push_back((*body)[0]);
-}
- validPositions = find_valid_positions(level, snake);
- if(validPositions.size() > 0){ // In case the snake found a valid place to go
-   snake->move(validPositions[rand() % validPositions.size()], snake->has_tail());
- }
- else{
-   cout << "FALSE" << endl;
-   return true;
-   }
- solution.push_back((*body)[0]);
+  }
 
   return true;
 }
