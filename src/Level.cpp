@@ -64,6 +64,18 @@ void Level::render(std::shared_ptr<Snake> snake){
 
   bool print; // TODO: see if i can get rid of this
 
+
+
+        //cout << "----SNAKE----" << endl;
+        //for(int i = 0; i < (int) body->size(); i++)
+        //    cout << "body["<< i <<"]: " << (*body)[i].first << " | " << (*body)[i].second << endl;
+        //cout << "-------------" << endl;
+
+        //cout << "----SNAKELOG----" << endl;
+        //for(int i = 0; i < (int) bodyLog->size(); i++)
+        //    cout << "bodyLog["<< i << "]: " << (*bodyLog)[i].first << " | " << (*bodyLog)[i].second << endl;
+        //cout << "----------------" << endl;
+
   for(int line = 0; line < mazeHeight; line++){ // For the lines
     for(int column = 0; column < mazeWidth; column++){ // For the columns
       for(int i = 0; i < (int) body->size(); i++){

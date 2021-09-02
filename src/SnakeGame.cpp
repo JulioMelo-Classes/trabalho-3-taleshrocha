@@ -150,40 +150,11 @@ void SnakeGame::render(){
     switch(state){
     case RUNNING:
 
-        //cout << "----SNAKE----" << endl;
-        //for(int i = 0; i < (int) body->size(); i++)
-        //    cout << "body["<< i <<"]: " << (*body)[i].first << " | " << (*body)[i].second << endl;
-        //cout << "-------------" << endl;
-
-        //cout << "----SNAKELOG----" << endl;
-        //for(int i = 0; i < (int) bodyLog->size(); i++)
-        //    cout << "bodyLog["<< i << "]: " << (*bodyLog)[i].first << " | " << (*bodyLog)[i].second << endl;
-        //cout << "----------------" << endl;
-
         // The status bar
         cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
 
         // Drawn the maze in the screen line by line
         level->render(snake);
-
-        //for(int line = 0; line < (int) maze->size(); line++){ // For the lines
-        //    for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
-        //        for(int i = 0; i < (int) body->size(); i++){
-        //            if(line == ((*body)[i]).first and column == ((*body)[i]).second){
-        //                if(i == 0)
-        //                    cout << "V";
-        //                else
-        //                    cout << "O";
-        //                print = true;
-        //            }
-        //        }
-        //        if(!print){
-        //            cout << (*maze)[line][column];
-        //        }
-        //        print = false;
-        //    }
-        //    cout << endl;
-        //}
         break;
     case WAITING_USER:
         // Render the menu
@@ -202,17 +173,18 @@ void SnakeGame::render(){
         )";
         cout << endl;
 
-        for(int line = 0; line < (int) maze->size(); line++){ // For the lines
-            for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
-                if(line == (level->get_spawn()).first and column == (level->get_spawn()).second){
-                    cout << "*";
-                }
-                else{
-                    cout << (*maze)[line][column];
-                }
-            }
-            cout << endl;
-        }
+        level->render(snake);
+        //for(int line = 0; line < (int) maze->size(); line++){ // For the lines
+        //    for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
+        //        if(line == (level->get_spawn()).first and column == (level->get_spawn()).second){
+        //            cout << "*";
+        //        }
+        //        else{
+        //            cout << (*maze)[line][column];
+        //        }
+        //    }
+        //    cout << endl;
+        //}
         break;
     default: break;
     }
