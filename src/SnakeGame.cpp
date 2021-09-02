@@ -114,22 +114,14 @@ void SnakeGame::update(){
 
     switch(state){
     case RUNNING:
-        if((*maze)[nextPos.first][nextPos.second] == '$'){
-            if(level->eat_food()) // If the snake eat the last food
-                state = VICTORY;
-
-            snake->move(nextPos, tail);
-            render();
-            //snakeLog->move(nextPos, tail);
-            level->put_food();
-            cout << "NEW SOLUTION!!!!!!!!" << endl;
-            if(!player->find_solution(level, snakeLog))
-                game_over();
-            //nextPos = player->next_move();
-            cin >> gameSpeed;
-        }
-        else
+        if((*maze)[nextPos.first][nextPos.second] != '$'){
             snake->move(nextPos, false);
+        }
+        else{
+            snake->move(nextPos, snake->has_tail());
+            if(!player->find_solution(level, snakeLog)) // Finds the first solution
+                game_over();
+        }
         break;
     case WAITING_USER:
         if(gameSpeed > 0)
