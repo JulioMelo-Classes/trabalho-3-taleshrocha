@@ -26,6 +26,7 @@ public:
   std::vector<std::pair<int, int>>* get_body();
   int get_life();
   int get_foodEaten();
+  bool has_tail();
 };
 
 #endif // SNAKE_H_

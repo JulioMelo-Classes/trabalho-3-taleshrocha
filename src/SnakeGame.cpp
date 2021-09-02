@@ -2,17 +2,11 @@
 
 using namespace std;
 
-/**
- * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
- * @param ms a quantidade de segundos que o programa deve esperar */
-void wait(int ms){
+void SnakeGame::wait(int ms){
     this_thread::sleep_for(chrono::milliseconds(ms));
 }
 
-/**
- * @brief função auxiliar para limpar o terminal */
-void clearScreen(){
-    //some C++ voodoo here ;D
+void SnakeGame::clearScreen(){
 #if defined _WIN32
     system("cls");
 #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
@@ -89,6 +83,7 @@ void SnakeGame::initialize_game(){
     snakes.push_back(make_shared<Snake>(5, spawn, tail));
     snakes.push_back(make_shared<Snake>(5, spawn, tail));
     players.push_back(make_shared<Player>()); // Creates and stores a player
+
     level = levels[0];
     player = players[0];
     snake = snakes[0];
@@ -101,8 +96,8 @@ void SnakeGame::process_actions(){
     case RUNNING:
         nextPos = player->next_move();
         break;
-    case WAITING_USER: // The games blocks here. Waits for the user to press enter
-        render(); // Shows the menu
+    case WAITING_USER: // The game blocks in here. Waits for the user to set a game time
+        render(); // Shows the menu TODO is redering two times
         //std::getline(std::cin, choice); // Waits for a enter
         cin >> gameSpeed; // In the menu screen
         break;
@@ -114,19 +109,24 @@ void SnakeGame::process_actions(){
 }
 
 void SnakeGame::update(){
+    int x;
     auto maze = level->get_maze();
 
     switch(state){
     case RUNNING:
         if((*maze)[nextPos.first][nextPos.second] == '$'){
-            if(level->eat_food())
+            if(level->eat_food()) // If the snake eat the last food
                 state = VICTORY;
 
             snake->move(nextPos, tail);
+            render();
             //snakeLog->move(nextPos, tail);
             level->put_food();
-            player->find_solution(level, snakeLog);
-            nextPos = player->next_move();
+            cout << "NEW SOLUTION!!!!!!!!" << endl;
+            if(!player->find_solution(level, snakeLog))
+                game_over();
+            //nextPos = player->next_move();
+            cin >> gameSpeed;
         }
         else
             snake->move(nextPos, false);
@@ -140,13 +140,23 @@ void SnakeGame::update(){
 }
 
 void SnakeGame::render(){
-    clearScreen();
+    //clearScreen();
     auto maze = level->get_maze();
     auto body = snake->get_body();
+    auto bodyLog = snakeLog->get_body();
     bool print;
 
     switch(state){
     case RUNNING:
+
+        //cout << "snake" << endl;
+        //for(int i = 0; i < (int) body->size(); i++)
+        //    cout << "body["<< i <<"]: " << (*body)[i].first << " | " << (*body)[i].second << endl;
+
+        //cout << "snakeLog" << endl;
+        //for(int i = 0; i < (int) bodyLog->size(); i++)
+        //    cout << "bodyLog["<< i << "]: " << (*bodyLog)[i].first << " | " << (*bodyLog)[i].second << endl;
+
         cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
         // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze
         // Drawn the maze in the screen line by line
@@ -202,7 +212,7 @@ void SnakeGame::render(){
     }
 }
 
-void SnakeGame::game_over(){ // TODO: Implement that
+void SnakeGame::game_over(){
     cout << "GAME-OVER!" << endl;
     cout << "CONTINUE? [y/n]" << endl;
     cin >> choice;
@@ -227,7 +237,8 @@ void SnakeGame::victory(){
 }
 
 void SnakeGame::loop(){
-    player->find_solution(level, snakeLog); // Finds the first solution
+    if(!player->find_solution(level, snakeLog)) // Finds the first solution
+        game_over();
 
     while(state != GAME_OVER){
         process_actions();

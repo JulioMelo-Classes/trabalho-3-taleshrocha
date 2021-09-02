@@ -73,6 +73,14 @@ private:
 
     //@brief é chamada quando o jogo termina a fim de destruir/resetar elementos do estado do jogo
     void game_over();
+
+    /**
+     * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
+     * @param ms a quantidade de segundos que o programa deve esperar */
+    void wait(int ms);
+    /**
+     * @brief função auxiliar para limpar o terminal */
+    void clearScreen();
 };
 
 #endif //SnakeGame_h

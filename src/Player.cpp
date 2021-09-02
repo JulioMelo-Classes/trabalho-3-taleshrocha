@@ -47,14 +47,26 @@ bool Player::find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> 
 
 
   // Pics a random position of the validPositions and stores it in the solution vector
-  do{
+while((*maze)[(*body)[0].first][(*body)[0].second] != '$'){
     validPositions = find_valid_positions(level, snake);
-    if(validPositions.size() > 0) // In case the snake found a valid place to go
+    if(validPositions.size() > 0){ // In case the snake found a valid place to go
       snake->move(validPositions[rand() % validPositions.size()], false);
-    else
-      return false;
+    }
+    else{
+      cout << "FALSE" << endl;
+      return true;
+    }
     solution.push_back((*body)[0]);
-}while((*maze)[(*body)[0].first][(*body)[0].second] != '$');
+}
+ validPositions = find_valid_positions(level, snake);
+ if(validPositions.size() > 0){ // In case the snake found a valid place to go
+   snake->move(validPositions[rand() % validPositions.size()], snake->has_tail());
+ }
+ else{
+   cout << "FALSE" << endl;
+   return true;
+   }
+ solution.push_back((*body)[0]);
 
   return true;
 }
