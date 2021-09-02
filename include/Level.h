@@ -1,8 +1,12 @@
 #ifndef LEVEL_H_
 #define LEVEL_H_
 #include <vector>
+#include <iostream>
 #include <string>
 #include <memory>
+#include "Snake.h"
+//#include "Player.h"
+
 
 class Level{
  private:
@@ -27,11 +31,11 @@ class Level{
 
   unsigned int get_foodQuantity();
 
-  bool eat_food(); // TODO: The snake eats the food, not the level
-
   void put_food();
 
   std::pair<int, int> get_spawn();
+
+  void render(std::shared_ptr<Snake> snake);
 
 };
 

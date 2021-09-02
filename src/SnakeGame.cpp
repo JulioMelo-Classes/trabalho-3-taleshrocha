@@ -65,7 +65,7 @@ void SnakeGame::initialize_game(){
             else{ // Gets the maze
                 for(int column = 0; column < (int) line.size(); column++){ // Gets the spawn point and removes the (*) from the map
                     if(line[column] == '*'){
-                        spawn = make_pair(lineCount, column);
+                        spawn = make_pair(lineCount - 1, column);
                         line[column] = ' ';
                     }
                 }
@@ -160,27 +160,30 @@ void SnakeGame::render(){
         //    cout << "bodyLog["<< i << "]: " << (*bodyLog)[i].first << " | " << (*bodyLog)[i].second << endl;
         //cout << "----------------" << endl;
 
+        // The status bar
         cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
-        // TODO: Change that to level.drawn_maze(solution); So i dont need to get the maze
+
         // Drawn the maze in the screen line by line
-        for(int line = 0; line < (int) maze->size(); line++){ // For the lines
-            for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
-                for(int i = 0; i < (int) body->size(); i++){
-                    if(line == ((*body)[i]).first and column == ((*body)[i]).second){
-                        if(i == 0)
-                            cout << "V";
-                        else
-                            cout << "O";
-                        print = true;
-                    }
-                }
-                if(!print){
-                    cout << (*maze)[line][column];
-                }
-                print = false;
-            }
-            cout << endl;
-        }
+        level->render(snake);
+
+        //for(int line = 0; line < (int) maze->size(); line++){ // For the lines
+        //    for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
+        //        for(int i = 0; i < (int) body->size(); i++){
+        //            if(line == ((*body)[i]).first and column == ((*body)[i]).second){
+        //                if(i == 0)
+        //                    cout << "V";
+        //                else
+        //                    cout << "O";
+        //                print = true;
+        //            }
+        //        }
+        //        if(!print){
+        //            cout << (*maze)[line][column];
+        //        }
+        //        print = false;
+        //    }
+        //    cout << endl;
+        //}
         break;
     case WAITING_USER:
         // Render the menu
@@ -240,9 +243,7 @@ void SnakeGame::victory(){
 }
 
 void SnakeGame::loop(){
-    if(!player->find_solution(level, snakeLog)){ // Finds the first solution
-        game_over();
-        }
+    player->find_solution(level, snakeLog); // Finds the first solution
 
     while(state != GAME_OVER){
         process_actions();
