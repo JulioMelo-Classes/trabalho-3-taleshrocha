@@ -21,6 +21,7 @@ std::vector<std::pair<int, int>> Player::find_valid_positions(std::shared_ptr<Le
          and !(x == 0 and y == 0)                                          // Can't be in the same spot
          and !(x != 0 and y != 0)){                                        // Can't be in the diagonals
         for(int i = 1; i < (int) body->size(); i++){ // See if the snake will not bite it's tail at any spot
+          // TODO: n voltar. Non-tail
           if((*body)[0].first + x == (*body)[i].first and (*body)[0].second + y == (*body)[i].second){
             bite = true;
             break;

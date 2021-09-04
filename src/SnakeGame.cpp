@@ -108,7 +108,6 @@ void SnakeGame::process_actions(){
 }
 
 void SnakeGame::update(){
-    int x;
     auto maze = level->get_maze();
     auto body = snake->get_body();
     auto bodyLog = snakeLog->get_body();
@@ -121,12 +120,11 @@ void SnakeGame::update(){
         else{
             snake->move(nextPos, snake->has_tail());
 
+            // Copies the snake into snakeLog to synchronize
             bodyLog->clear();
-            for(int i = 0; i < body->size(); i++){
+            for(int i = 0; i < (int) body->size(); i++)
                 bodyLog->push_back(make_pair((*body)[i].first, (*body)[i].second));
-            }
 
-            //snakeLog->move(nextPos, snakeLog->has_tail());
             cin >> gameSpeed;
             level->put_food();
             player->find_solution(level, snakeLog);
@@ -141,19 +139,12 @@ void SnakeGame::update(){
 }
 
 void SnakeGame::render(){
-    //clearScreen();
-    auto maze = level->get_maze();
-    auto body = snake->get_body();
-    auto bodyLog = snakeLog->get_body();
-    bool print;
-
+    clearScreen();
     switch(state){
     case RUNNING:
-
         // The status bar
         cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
 
-        // Drawn the maze in the screen line by line
         level->render(snake);
         break;
     case WAITING_USER:
@@ -174,17 +165,6 @@ void SnakeGame::render(){
         cout << endl;
 
         level->render(snake);
-        //for(int line = 0; line < (int) maze->size(); line++){ // For the lines
-        //    for(int column = 0; column < (int) (*maze)[line].size(); column++){ // For the columns
-        //        if(line == (level->get_spawn()).first and column == (level->get_spawn()).second){
-        //            cout << "*";
-        //        }
-        //        else{
-        //            cout << (*maze)[line][column];
-        //        }
-        //    }
-        //    cout << endl;
-        //}
         break;
     default: break;
     }
