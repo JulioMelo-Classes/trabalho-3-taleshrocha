@@ -37,6 +37,8 @@ class Level{
 
   void render(std::shared_ptr<Snake> snake);
 
+  void wellcome();
+
 };
 
 #endif // LEVEL_H_

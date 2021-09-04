@@ -79,6 +79,7 @@ void SnakeGame::initialize_game(){
         cout << "ERROR: Unable to open the mazes file!" << endl;
     }
 
+    // TODO make that nice
     levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
     snakes.push_back(make_shared<Snake>(5, spawn, tail));
     snakes.push_back(make_shared<Snake>(5, spawn, tail));
@@ -149,21 +150,7 @@ void SnakeGame::render(){
         break;
     case WAITING_USER:
         // Render the menu
-        cout << R"(
-           ____________              ____________              ____________
-         /  _________   \          /  _________   \          /  _________   \
-        |  |  _____  |  |  _____  |  |  _____  |  |  _____  |  |  _____  |  |        _
-        |  | |   __| |  | |   | | |  | |  _  | |  | |__   | |  | |   __| |  |       ( )
-        |  | |__   | |  | | | | | |  | |     | |  | |   __| |  | |   __| |  |      (   )
-        |  | |_____| |  | |_|___| |  | |__|__| |  | |_____| |  | |_____| |  |      /  /
-       ($  $)        \   \________/  /         \   \________/  /         \  \_____/  /
-        \__/          \_____________/           \_____________/           \_________/
-
-                              a SNAke traped in a maZE
-                                Set a speed to begin
-        )";
-        cout << endl;
-
+        level->wellcome();
         level->render(snake);
         break;
     default: break;
