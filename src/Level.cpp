@@ -98,10 +98,16 @@ void Level::render(std::shared_ptr<Snake> snake){
             cout << "V";
           else
             cout << "O";
+          print = true;
         }
       }
-      cout << maze[line][column];
+      if(!print){
+        cout << maze[line][column];
+      }
+      print = false;
     }
     cout << endl;
   }
+
+
 }
