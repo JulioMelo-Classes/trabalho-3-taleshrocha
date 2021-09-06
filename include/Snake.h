@@ -1,12 +1,12 @@
 #ifndef SNAKE_H_
 #define SNAKE_H_
-// TODO: revide those includes
+// TODO: revise those includes
 #include <iostream>
 #include <utility>
 #include <vector>
 #include <string>
 #include <memory>
-#include "Level.h"
+//#include "Level.h"
 
 class Snake{
 private:
@@ -26,6 +26,7 @@ public:
   std::vector<std::pair<int, int>>* get_body();
   int get_life();
   int get_foodEaten();
+  bool has_tail();
 };
 
 #endif // SNAKE_H_

@@ -14,29 +14,27 @@
 
 class SnakeGame{
 public:
-    //@brief descreve os possíveis estados do jogo, fique à vontade para adicionar outros se necessário
+    //@brief All the possible game states
     enum GameStates{
-        RUNNING, //<! quando o jogo está executando o estado é RUNNING
-        GAME_OVER, //<! quando o jogo deve terminar o estado é GAME_OVER
-        VICTORY, //<! quando o jogo deve terminar o estado é GAME_OVER
-        WAITING_USER //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER
+        RUNNING, //<! When the game is executing
+        GAME_OVER, //<! When the game finishes
+        WAITING_USER //<! When waiting for the user input
     };
 
 private:
-    //<! attributes
-    GameStates state; //<! keeps the game state
-    std::string choice; //<! used in process_actions. Keeps the user choice
-    std::string levelPath; //<! Is the path to the maze file
+    //<! Attributes
+    GameStates state;            //<! keeps the game state
+    std::string levelPath;       //<! Is the path to the maze file
     std::pair<int, int> nextPos; //<! used in Player::next_move. Keeps the next snake's position
-    int gameSpeed; //<! Sets the speed. The smaller, the faster
-    bool tail = false; //<! If the game mode is with tail
+    int gameSpeed;               //<! Sets the speed. The smaller, the faster
+    bool tail = false;           //<! If the game mode is with tail
 
     // Vectors
     std::vector<std::shared_ptr<Level>> levels;   //<! Store all the level's references in the game
     std::vector<std::shared_ptr<Player>> players; //<! Store all the snake's references in the game
     std::vector<std::shared_ptr<Snake>> snakes;   //<! Store all the player's references in the game
 
-    // Something TODO
+    // References
     std::shared_ptr<Snake> snake;    //<! The snake used to render
     std::shared_ptr<Snake> snakeLog; //<! The snake used in to find the solutions
     std::shared_ptr<Player> player;  //<! The player in with we are using
@@ -69,10 +67,16 @@ private:
     //@brief testa o estado do jogo e desenha a tela correspondente
     void render();
 
-    void victory();
-
     //@brief é chamada quando o jogo termina a fim de destruir/resetar elementos do estado do jogo
     void game_over();
+
+    /**
+     * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
+     * @param ms a quantidade de segundos que o programa deve esperar */
+    void wait(int ms);
+    /**
+     * @brief função auxiliar para limpar o terminal */
+    void clearScreen();
 };
 
 #endif //SnakeGame_h
