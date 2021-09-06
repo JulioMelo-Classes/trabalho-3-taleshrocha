@@ -138,7 +138,7 @@ void SnakeGame::update(){
 void SnakeGame::render(){
     switch(state){
     case RUNNING:
-        clearScreen();
+        //clearScreen();
         // The status bar
         cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
 
