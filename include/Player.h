@@ -16,6 +16,7 @@ class Player{
   std::vector<std::pair<int, int>> solution;
   std::vector<std::pair<int, int>> visited;
   int moveCounter = -1; // To keep track of the next move in the move function
+  std::pair<int, int> lastPos = std::make_pair(-1, -1);
 
 public:
   Player();

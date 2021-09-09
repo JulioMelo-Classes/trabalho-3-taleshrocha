@@ -110,7 +110,7 @@ void SnakeGame::update(){
 
     switch(state){
     case RUNNING:
-        cout << nextPos.first << " " << nextPos.second << endl;
+        //cout << nextPos.first << " " << nextPos.second << endl;
         if(nextPos.first == -1 and nextPos.second == -1)
             game_over();
         else if((*maze)[nextPos.first][nextPos.second] != '$')
