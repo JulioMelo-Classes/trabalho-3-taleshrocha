@@ -110,6 +110,7 @@ void SnakeGame::update(){
 
     switch(state){
     case RUNNING:
+        cout << nextPos.first << " " << nextPos.second << endl;
         if(nextPos.first == -1 and nextPos.second == -1)
             game_over();
         else if((*maze)[nextPos.first][nextPos.second] != '$')
@@ -124,6 +125,7 @@ void SnakeGame::update(){
                 bodyLog->push_back(make_pair((*body)[i].first, (*body)[i].second));
 
             level->put_food();
+            player->reset();
             player->find_solution(level, snakeLog);
         }
         break;
@@ -162,6 +164,7 @@ void SnakeGame::game_over(){
         state = WAITING_USER;
         snake = make_shared<Snake>(5, level->get_spawn(), tail);
         snakeLog = make_shared<Snake>(5, level->get_spawn(), tail);
+        player->reset();
         player->find_solution(level, snakeLog);
         clearScreen();
         level->wellcome();

@@ -10,12 +10,11 @@ Player::Player(){ // TODO: Make that useful
 }
 
 bool Player::find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> snake){
-  //solution.clear(); // Deletes all old solutions //TODO fix that bugs in here
-  moveCounter = -1; // Resets the counter //TODO fix that to
   auto maze = level->get_maze();
   auto body = snake->get_body();
   pair<int, int> lastPos = (*body)[0];
   bool bite = false; // just to auxiliate
+  visited.push_back((*body)[0]);
   //wait(100);
 
   if((*maze)[(*body)[0].first][(*body)[0].second] == '$')
@@ -28,7 +27,7 @@ bool Player::find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> 
          and ((*maze)[(*body)[0].first + x][(*body)[0].second + y] != '#') // can't be in the wall
          and !(x == 0 and y == 0)                                          // can't be in the same spot
          and !(x != 0 and y != 0)                                          // can't be in the diagonals
-         and (find(solution.begin(), solution.end(), make_pair((*body)[0].first + x, (*body)[0].second + y)) == solution.end())
+         and (find(visited.begin(), visited.end(), make_pair((*body)[0].first + x, (*body)[0].second + y)) == visited.end())
          and !(lastPos.first == (*body)[0].first + x and lastPos.second == (*body)[0].second + y)){ // can't be in the back
         for(int i = 1; i < (int) body->size(); i++){ // see if the snake will not bite it's tail at any spot
           if((*body)[0].first + x == (*body)[i].first and (*body)[0].second + y == (*body)[i].second){
@@ -40,19 +39,29 @@ bool Player::find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> 
           cout << x << " " << y << endl;
           lastPos = (*body)[0];
           snake->move(make_pair((*body)[0].first + x, (*body)[0].second + y), false);
-          solution.push_back((*body)[0]);
-          if(find_solution(level, snake))
+          visited.push_back((*body)[0]);
+          if(find_solution(level, snake)){
+            //solution.push_back((*body)[0]);
+            solution.insert(solution.begin(), (*body)[0]);
             return true;
+          }
         }
         bite = false;
       }
     }
   }
   //solution.push_back(make_pair(-1, -1));
+  //cout << "CLEAR" << endl;
+  //visited.clear();
   return false;
 }
 
 pair<int, int> Player::next_move(){
   moveCounter++;
   return solution[moveCounter];
+}
+
+void Player::reset(){
+  solution.clear();
+  moveCounter = -1;
 }

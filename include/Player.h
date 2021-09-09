@@ -14,7 +14,8 @@ class Player{
  private:
   //<! Attributes
   std::vector<std::pair<int, int>> solution;
-  int moveCounter; // To keep track of the next move in the move function
+  std::vector<std::pair<int, int>> visited;
+  int moveCounter = -1; // To keep track of the next move in the move function
 
 public:
   Player();
@@ -24,6 +25,8 @@ public:
   bool find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> snake);
 
   std::pair<int, int> next_move();
+
+  void reset();
 };
 
 #endif // PLAYER_H_
