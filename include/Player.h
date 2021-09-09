@@ -20,7 +20,7 @@ class Player{
 public:
   Player();
 
-  //std::vector<std::pair<int, int>> find_valid_positions(std::shared_ptr<Level> level, std::shared_ptr<Snake> snake, std::pair<int, int> lastPos);
+  std::vector<std::pair<int, int>> find_valid_positions(std::shared_ptr<Level> level, std::shared_ptr<Snake> snake, std::pair<int, int> lastPos);
 
   bool find_solution(std::shared_ptr<Level> level, std::shared_ptr<Snake> snake);
 
