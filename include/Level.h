@@ -10,9 +10,10 @@
 
 class Level{
  private:
-  unsigned int mazeHeight; //< The height of the maze vector
-  unsigned int mazeWidth; //< The width of the maze vector
-  unsigned int foodQuantity; //< How many times the food is going to be spawn in the map
+  int mazeHeight; //< The height of the maze vector
+  int mazeWidth; //< The width of the maze vector
+  int foodQuantity; //< How many times the food is going to be spawn in the map
+  int foodLeft; //< How many times the food is going to be spawn in the map
   std::pair<int, int> spawn; //< The snake spawn point. The "*"
   std::vector<std::string> maze; //<! Vector containing the maze
   std::vector<std::pair<int, int>> foodValidPositions; //<! Store all the positions that the food can go in the map
@@ -29,15 +30,17 @@ class Level{
 
   unsigned int get_maze_width();
 
-  unsigned int get_foodQuantity();
+  unsigned int get_foodLeft();
 
-  void put_food();
+  bool put_food();
 
   std::pair<int, int> get_spawn();
 
   void render(std::shared_ptr<Snake> snake);
 
   void wellcome();
+
+  void reset();
 
 };
 

@@ -18,6 +18,7 @@ public:
     enum GameStates{
         RUNNING, //<! When the game is executing
         GAME_OVER, //<! When the game finishes
+        VICTORY, //<! When the snake eats all food
         WAITING_USER //<! When waiting for the user input
     };
 
@@ -69,6 +70,9 @@ private:
 
     //@brief é chamada quando o jogo termina a fim de destruir/resetar elementos do estado do jogo
     void game_over();
+
+    void victory(); //<! When the snake eats all food
+
 
     /**
      * @brief função auxiliar para fazer o programa esperar por alguns milisegundos

@@ -5,10 +5,10 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "Level.h"
-#include "Snake.h"
 #include <chrono> //por causa do sleep
 #include <thread> //por causa do sleep
+#include "Level.h"
+#include "Snake.h"
 
 class Player{
  private:

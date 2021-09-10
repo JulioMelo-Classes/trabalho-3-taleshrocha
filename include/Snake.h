@@ -1,11 +1,11 @@
 #ifndef SNAKE_H_
 #define SNAKE_H_
-// TODO: revise those includes
 #include <iostream>
 #include <utility>
 #include <vector>
 #include <string>
 #include <memory>
+
 //#include "Level.h"
 
 class Snake{
