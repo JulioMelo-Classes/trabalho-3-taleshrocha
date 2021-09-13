@@ -2,14 +2,8 @@
 
 Snake::Snake(int _life, std::pair<int, int> spawn, bool _tail){
   life = _life;
-  foodEaten = 0;
-  headPosition = up;
   tail = _tail;
   body.push_back(spawn); // Creates the head of my snake
-}
-
-void Snake::turn(int _headPosition){
-  headPosition = _headPosition;
 }
 
 void Snake::move(std::pair<int, int> position, bool food){ // TODO: make that food var more understandable
@@ -33,10 +27,10 @@ int Snake::get_life(){
   return life;
 }
 
-int Snake::get_foodEaten(){
-  return foodEaten;
-}
-
 bool Snake::has_tail(){
   return tail;
+}
+
+void Snake::hit(){
+  life--;
 }

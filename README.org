@@ -1,4 +1,6 @@
-* LP1's 3nd project
+#+TITLE: LP1's 3nd project
+
+* About Snaze
 
 #+begin_src
        ____________              ____________              ____________
@@ -15,7 +17,7 @@
 
 - This project is a snake similar game with ASCII graphics.
 
-** How to compile
+* How to compile
 - Open your shell and run:
 #+begin_src shell
 mkdir build
@@ -25,15 +27,29 @@ cmake --build .
 #+end_src
 - Make sure you have CMake installed in your system.
 
-** How to run
+* How to run
 - Open your shell and run:
 #+begin_src shell
-./Snaze ../data/maze-file.dat tail
+./Snaze ../data/maze-file.txt tail
 #+end_src
 - Or:
 #+begin_src shell
-./Snaze ../data/maze-file.dat no-tail
+./Snaze ../data/maze-file.txt no-tail
 #+end_src
 - For the non-tail mode. Looks like Pacman!
 
-- Then, set the game speed. 1 is the fastest;
+* The mazes
+** empty-maze.txt
+- As the name says. Just a empty maze, to test the file dealing.
+** maze1.txt
+- The original maze. Nothing especial.
+** maze2.txt
+- A empty maze. To see if the non-tail snake is going to win every time.
+** maze3.txt
+- A maze so the snake will walk in a rectangle eternally. Just for fun. The non-tail snake always win.
+** maze4.txt
+- To test if the non-tail snake is going to go back. If that happen, the non-tail snake will never die.
+** maze5.txt
+- Just to test what happens when the snake dies. This maze is a big snake trap.
+** maze-set.txt
+- To test the multiple level functionality.

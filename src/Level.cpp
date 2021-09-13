@@ -2,13 +2,14 @@
 
 using namespace std;
 
-Level::Level(vector<string> _maze, unsigned int _mazeHeight, unsigned int _mazeWidth, unsigned int _foodQuantity, pair<int, int> _spawn){
+Level::Level(vector<string> _maze, int _mazeHeight, int _mazeWidth, int _foodQuantity, pair<int, int> _spawn){
   for(auto line : _maze){
     maze.push_back(line);
   }
   mazeHeight = _mazeHeight;
   mazeWidth = _mazeWidth;
   foodQuantity = _foodQuantity;
+  foodLeft = foodQuantity;
   spawn = _spawn;
 
   for(int x = 0; x < (int) mazeHeight; x++){  // For the lines
@@ -26,37 +27,43 @@ vector<string>* Level::get_maze(){ // TODO: Maybe don't pass the vector referenc
   return &maze;
 }
 
-unsigned int Level::get_maze_height(){
+int Level::get_maze_height(){
   return mazeHeight;
 }
 
-unsigned int Level::get_maze_width(){
+int Level::get_maze_width(){
   return mazeWidth;
 }
 
-unsigned int Level::get_foodQuantity(){
-  return foodQuantity;
-
+int Level::get_foodLeft(){
+  return foodLeft;
 }
 
 pair<int, int> Level::get_spawn(){
   return spawn;
 }
 
-void Level::put_food(){
+bool Level::put_food(std::shared_ptr<Snake> snake, int foodEaten){
+  auto body = snake->get_body();
 
-  //   foodQuantity--;
-  // if(foodQuantity == 0){ // The snake eat all the food
-  //   return true;
-  // }
-  // else{
-  //   return false;
-  // }
+  foodLeft = foodLeft - foodEaten;
+   if(foodLeft == -1){ // The snake eat all the food
+     return true;
+   }
+   else{
+     maze[foodPosition.first][foodPosition.second] = ' '; // Deletes the previous position
+     foodPosition = foodValidPositions[rand() % foodValidPositions.size()]; // Gets the new position
 
-
-  maze[foodPosition.first][foodPosition.second] = ' '; // Deletes the previous position
-  foodPosition = foodValidPositions[rand() % foodValidPositions.size()]; // Gets the new position
-  maze[foodPosition.first][foodPosition.second] = '$'; // Sets the new position
+     for(int i = 0; i < (int) body->size(); i++){
+       if(foodPosition.first == ((*body)[i]).first and foodPosition.second == ((*body)[i]).second){
+         maze[foodPosition.first][foodPosition.second] = ' '; // Deletes the previous position
+         foodPosition = foodValidPositions[rand() % foodValidPositions.size()]; // Gets other position
+       }
+       else
+         maze[foodPosition.first][foodPosition.second] = '$'; // Sets the new position
+       }
+     return false;
+   }
 }
 
 void Level::wellcome(){
@@ -71,7 +78,6 @@ void Level::wellcome(){
         \__/          \_____________/           \_____________/           \_________/
 
                               a SNAke traped in a maZE
-                                Set a speed to begin
         )";
   cout << endl;
 }
@@ -108,6 +114,8 @@ void Level::render(std::shared_ptr<Snake> snake){
     }
     cout << endl;
   }
+}
 
-
+void Level::reset(){
+  foodLeft = foodQuantity;
 }

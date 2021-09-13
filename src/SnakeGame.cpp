@@ -40,55 +40,96 @@ void SnakeGame::initialize_game(){
     int lineCount = 0, paramCount = 0;
     ifstream levelFile(levelPath);
 
+
     if(levelFile.is_open()){
-        while(getline(levelFile, line)){ // Gets all the file's lines
-            if(lineCount == 0){ // Gets all the maze's parameters
-                while((pos = line.find(delimiter)) != std::string::npos){
-                    token = line.substr(0, pos); //Break the string into tokens.
-                    if(paramCount == 0){
-                        ss << token;
-                        ss >> mazeHeight;
+
+        if (levelFile.peek() == std::ifstream::traits_type::eof()){
+            cout << "ERROR: The file is empty!" << endl;
+            state = GAME_OVER;
+        }
+
+        else{
+            while(getline(levelFile, line)){ // Gets all the file's lines line per line
+                if(lineCount == 0){ // Gets all the maze's parameters
+                    while((pos = line.find(delimiter)) != std::string::npos){
+                        token = line.substr(0, pos); //Break the string into tokens
+                        if(paramCount == 0){
+                            ss << token;
+                            ss >> mazeHeight;
+                        }
+                        else{
+                            ss.clear(); // To be able to get new values in that ss
+                            ss << token;
+                            ss >> mazeWidth;
+                        }
+                        line.erase(0, pos + delimiter.length()); //Erase the token from the original string.
+                        paramCount++;
                     }
-                    else{
-                        ss.clear(); // To be able to get new values in that ss
-                        ss << token;
-                        ss >> mazeWidth;
-                    }
-                    line.erase(0, pos + delimiter.length()); //Erase the token from the original string.
-                    paramCount++;
+                    ss.clear(); // To be able to get new values in that ss
+                    ss << line;
+                    ss >> foodQuantity;
                 }
-                ss.clear(); // To be able to get new values in that ss
-                ss << line;
-                ss >> foodQuantity;
+                else{ // Gets the maze
+                    for(int column = 0; column < (int) line.size(); column++){ // Gets the spawn point and removes the (*) from the map
+                        if(line[column] == '*'){
+                            spawn = make_pair(lineCount - 1, column);
+                            line[column] = ' ';
+                        }
+                    }
+                    maze.push_back(line);
+                }
+                if(line.empty()){
+                    levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
+                    maze.clear(); // Clears the previous level
+                    lineCount = 0;
+                }
+                else{
+                    lineCount++;
+                }
             }
-            else{ // Gets the maze
-                for(int column = 0; column < (int) line.size(); column++){ // Gets the spawn point and removes the (*) from the map
-                    if(line[column] == '*'){
-                        spawn = make_pair(lineCount - 1, column);
-                        line[column] = ' ';
+            levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
+
+            snakes.push_back(make_shared<Snake>(5, spawn, tail));
+            snakes.push_back(make_shared<Snake>(5, spawn, tail));
+            players.push_back(make_shared<Player>()); // Creates and stores a player
+
+            level = levels[0];
+            player = players[0];
+            snake = snakes[0];
+            snakeLog = snakes[1];
+            state = WAITING_USER;
+
+            // TODO: thats ugly!
+            vector<pair<int, int>> validPositions;
+            string choice;
+            auto maze_ = level->get_maze();
+
+            cout << "Random Start? [y/n]" << endl;
+            cin >> choice;
+
+            if(choice == "y"){
+                for(int x = 0; x < (int) level->get_maze_height(); x++){  // For the lines
+                    for(int y = 0; y < (int) level->get_maze_width(); y++){ // For the columns
+                        if((*maze_)[x][y] != '#'){
+                            validPositions.push_back(make_pair(x, y));
+                        }
                     }
                 }
-                maze.push_back(line);
+                spawn = validPositions[rand() % validPositions.size()];
+                snake->move(spawn, false);
+                snakeLog->move(spawn, false);
             }
-            lineCount++;
+
+            player->find_solution(level, snakeLog); // Finds the first solution
+            level->wellcome();
+            level->render(snake);
+            cout << "Game speed [0-9]: ";
         }
     }
     else{
-        //TODO: Make that better. Like return 1
         cout << "ERROR: Unable to open the mazes file!" << endl;
+        state = GAME_OVER;
     }
-
-    // TODO make that nice
-    levels.push_back(make_shared<Level>(maze, mazeHeight, mazeWidth, foodQuantity, spawn));
-    snakes.push_back(make_shared<Snake>(5, spawn, tail));
-    snakes.push_back(make_shared<Snake>(5, spawn, tail));
-    players.push_back(make_shared<Player>()); // Creates and stores a player
-
-    level = levels[0];
-    player = players[0];
-    snake = snakes[0];
-    snakeLog = snakes[1];
-    state = WAITING_USER;
 }
 
 void SnakeGame::process_actions(){
@@ -110,12 +151,18 @@ void SnakeGame::update(){
 
     switch(state){
     case RUNNING:
-        if(nextPos.first == -1 and nextPos.second == -1)
-            game_over();
-        else if((*maze)[nextPos.first][nextPos.second] != '$')
+        if(nextPos.first == -1 and nextPos.second == -1){
+            snake->hit();
+            if(snake->get_life() == 0)
+                game_over();
+            else
+                ouch();
+        }
+
+        if((*maze)[nextPos.first][nextPos.second] != '$')
             snake->move(nextPos, false);
         else{
-            state = WAITING_USER;
+            //state = WAITING_USER; //TODO change to always set the speed
             snake->move(nextPos, snake->has_tail());
 
             // Copies the snake into snakeLog to synchronize
@@ -123,7 +170,10 @@ void SnakeGame::update(){
             for(int i = 0; i < (int) body->size(); i++)
                 bodyLog->push_back(make_pair((*body)[i].first, (*body)[i].second));
 
-            level->put_food();
+            if(level->put_food(snake))
+                victory();
+
+            player->reset();
             player->find_solution(level, snakeLog);
         }
         break;
@@ -140,7 +190,7 @@ void SnakeGame::render(){
     case RUNNING:
         clearScreen();
         // The status bar
-        cout << "Lifes: " << snake->get_life() << " | Score: " << snake->get_foodEaten() << " | Food left: " << level->get_foodQuantity() << endl;
+        cout << "Lifes: " << snake->get_life() << " | Food left: " << level->get_foodLeft() << endl;
 
         level->render(snake);
         break;
@@ -151,18 +201,38 @@ void SnakeGame::render(){
     }
 }
 
+void SnakeGame::ouch(){
+    cout << "OUCH!" << endl;
+    wait(500);
+    cout << "YOU HIT THE WALL!" << endl;
+    wait(1000);
+
+    snake->reset_body(level->get_spawn());
+    snakeLog->reset_body(level->get_spawn());
+    level->put_food(snake, 0);
+
+    player->reset();
+    player->find_solution(level, snakeLog);
+    nextPos = player->next_move();
+}
+
 void SnakeGame::game_over(){
     string choice;
 
     cout << "GAME-OVER!" << endl;
     wait(1000);
-    cout << "TRY AGAIN? [y/n]" << endl;
+    cout << "Try Again? [y/n]" << endl;
     cin >> choice;
     if(choice == "y"){
         state = WAITING_USER;
+        level->reset();
+        level = levels[0];
+        //TODO make a reset snake
         snake = make_shared<Snake>(5, level->get_spawn(), tail);
         snakeLog = make_shared<Snake>(5, level->get_spawn(), tail);
+        player->reset();
         player->find_solution(level, snakeLog);
+        nextPos = player->next_move();
         clearScreen();
         level->wellcome();
         level->render(snake);
@@ -171,13 +241,54 @@ void SnakeGame::game_over(){
         state = GAME_OVER;
 }
 
+void SnakeGame::victory(){
+    string choice;
+
+    cout << "VICTORY!" << endl;
+    wait(1000);
+    auto it = find(levels.begin(), levels.end(), level);
+    if(it == levels.end()-1){
+        cout << "You Won The Game!" << endl;
+        wait(500);
+        cout << "Loop? [y/n]" << endl;
+        cin >> choice;
+        if(choice == "y"){
+            state = WAITING_USER;
+            level->reset();
+            level = levels[0];
+            snake = make_shared<Snake>(5, level->get_spawn(), tail);
+            snakeLog = make_shared<Snake>(5, level->get_spawn(), tail);
+            player->reset();
+            player->find_solution(level, snakeLog);
+            clearScreen();
+            level->wellcome();
+            level->render(snake);
+        }
+        else
+            state = GAME_OVER;
+    }
+    else{
+        cout << "Next Level? [y/n]" << endl;
+        cin >> choice;
+        if(choice == "y"){
+            state = WAITING_USER;
+            level->reset();
+            it++;
+            level = (*it);
+            snake = make_shared<Snake>(5, level->get_spawn(), tail);
+            snakeLog = make_shared<Snake>(5, level->get_spawn(), tail);
+            player->reset();
+            player->find_solution(level, snakeLog);
+            clearScreen();
+            level->wellcome();
+            level->render(snake);
+        }
+        else
+            state = GAME_OVER;
+    }
+}
+
 void SnakeGame::loop(){
-    player->find_solution(level, snakeLog); // Finds the first solution
-
-    level->wellcome();
-    level->render(snake);
-    cout << "Game speed [0-9]: ";
-
     while(state != GAME_OVER){
         process_actions();
         update();
