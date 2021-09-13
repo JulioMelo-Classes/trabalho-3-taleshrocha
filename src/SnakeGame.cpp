@@ -151,9 +151,15 @@ void SnakeGame::update(){
 
     switch(state){
     case RUNNING:
-        if(nextPos.first == -1 and nextPos.second == -1)
-            game_over();
-        else if((*maze)[nextPos.first][nextPos.second] != '$')
+        if(nextPos.first == -1 and nextPos.second == -1){
+            snake->hit();
+            if(snake->get_life() == 0)
+                game_over();
+            else
+                ouch();
+        }
+
+        if((*maze)[nextPos.first][nextPos.second] != '$')
             snake->move(nextPos, false);
         else{
             //state = WAITING_USER; //TODO change to always set the speed
@@ -164,9 +170,9 @@ void SnakeGame::update(){
             for(int i = 0; i < (int) body->size(); i++)
                 bodyLog->push_back(make_pair((*body)[i].first, (*body)[i].second));
 
-            if(level->put_food()){
+            if(level->put_food(snake))
                 victory();
-            }
+
             player->reset();
             player->find_solution(level, snakeLog);
         }
@@ -195,6 +201,21 @@ void SnakeGame::render(){
     }
 }
 
+void SnakeGame::ouch(){
+    cout << "OUCH!" << endl;
+    wait(500);
+    cout << "YOU HIT THE WALL!" << endl;
+    wait(1000);
+
+    snake->reset_body(level->get_spawn());
+    snakeLog->reset_body(level->get_spawn());
+    level->put_food(snake, 0);
+
+    player->reset();
+    player->find_solution(level, snakeLog);
+    nextPos = player->next_move();
+}
+
 void SnakeGame::game_over(){
     string choice;
 
@@ -211,6 +232,7 @@ void SnakeGame::game_over(){
         snakeLog = make_shared<Snake>(5, level->get_spawn(), tail);
         player->reset();
         player->find_solution(level, snakeLog);
+        nextPos = player->next_move();
         clearScreen();
         level->wellcome();
         level->render(snake);

@@ -2,10 +2,6 @@
 
 using namespace std;
 
-void wait(int ms){
-  this_thread::sleep_for(chrono::milliseconds(ms));
-}
-
 Player::Player(){ // TODO: Make that useful
 }
 

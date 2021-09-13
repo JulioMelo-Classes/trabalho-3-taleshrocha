@@ -1,4 +1,6 @@
-* LP1's 3nd project
+#+TITLE: LP1's 3nd project
+
+* About Snaze
 
 #+begin_src
        ____________              ____________              ____________
@@ -28,12 +30,13 @@ cmake --build .
 ** How to run
 - Open your shell and run:
 #+begin_src shell
-./Snaze ../data/maze-file.dat tail
+./Snaze ../data/maze-file.txt tail
 #+end_src
 - Or:
 #+begin_src shell
-./Snaze ../data/maze-file.dat no-tail
+./Snaze ../data/maze-file.txt no-tail
 #+end_src
 - For the non-tail mode. Looks like Pacman!
 
-- Then, set the game speed. 1 is the fastest;
+** The maze files
+- You can get the documentation for each one of the files in d
